@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Rapid Query
 
-## Getting Started
+An agile web app leveraging the power of Hono, Next.js, and Cloudflare - delivering fast API responses in milliseconds. Simply input your query and experience high-performance results. Engineered for nothing but efficiency and speed.
 
-First, run the development server:
+## Screenshot
+
+<img src="./screenshot.png">
+
+<p align="center">
+  <a href="https://rapid-query.pages.dev"><strong>View Project »</strong></a>
+</p>
+
+## Running Locally
+
+This application requires Node.js v18.20.1+.
+
+### Cloning the repository to the local machine:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/nabarvn/rapid-query.git
+cd rapid-query
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installing the dependencies:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Setting up the `.env` file:
 
-## Learn More
+```bash
+cp .env.example .env
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Seeding the application:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm seed
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Deploying the application to Cloudflare Workers:
 
-## Deploy on Vercel
+```bash
+pnpm run deploy
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Running the application:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```bash
+pnpm dev
+```
+
+## Tech Stack:
+
+- **Language**: [TypeScript](https://www.typescriptlang.org)
+- **Framework**: [Next.js](https://nextjs.org)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com)
+- **Analytics**: [Cloudflare Web Analytics](https://www.cloudflare.com/web-analytics)
+- **Redis Database**: [Upstash](https://upstash.com/docs/vector/overall/getstarted)
+- **Edge Runtime**: [Cloudflare Workers](https://developers.cloudflare.com/workers)
+- **API Server**: [Hono.js](https://hono.dev/top)
+- **Deployment**: [Cloudflare Pages](https://developers.cloudflare.com/pages)
+
+## Credits
+
+Learned a ton while building this project. All thanks to Josh for the next level (no pun intended) tutorial!
+
+<hr />
+
+<div align="center">Don't forget to leave a STAR 🌟</div>
