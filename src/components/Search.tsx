@@ -28,7 +28,10 @@ const Search = () => {
     const fetchData = async () => {
       if (!input) return setSearchResults(undefined);
 
-      const res = await fetch(`/api/search?q=${input}`);
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_WORKERS_BASE_URL}/api/search?q=${input}`
+      );
+
       const data = (await res.json()) as typeof searchResults;
 
       setSearchResults(data);
