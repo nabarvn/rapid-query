@@ -1,5 +1,6 @@
 name = "rapid-query"
 compatibility_date = ""
+compatibility_flags = [ "nodejs_compat" ]
 
 [vars]
 UPSTASH_REDIS_REST_URL = ""
