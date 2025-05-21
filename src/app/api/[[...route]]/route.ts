@@ -1,38 +1,76 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { env } from "hono/adapter";
 import { handle } from "hono/vercel";
+import type { MiddlewareHandler } from "hono";
 import { Redis } from "@upstash/redis/cloudflare";
 
 export const runtime = "edge";
 
-const app = new Hono().basePath("/api");
-
-// to access environment variables inside of the api route
 type EnvConfig = {
+  CRON_SECRET: string;
   UPSTASH_REDIS_REST_URL: string;
   UPSTASH_REDIS_REST_TOKEN: string;
 };
 
-// cors middleware
+type Variables = {
+  redis: Redis;
+};
+
+const app = new Hono<{
+  Bindings: EnvConfig;
+  Variables: Variables;
+}>().basePath("/api");
+
+const redisMiddleware: MiddlewareHandler<{
+  Bindings: EnvConfig;
+  Variables: Variables;
+}> = async (c, next) => {
+  const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } = c.env;
+
+  const redis = new Redis({
+    url: UPSTASH_REDIS_REST_URL,
+    token: UPSTASH_REDIS_REST_TOKEN,
+  });
+
+  c.set("redis", redis);
+  await next();
+};
+
 app.use("/*", cors());
+app.use("/search", redisMiddleware);
+app.use("/ping", redisMiddleware);
+
+app.get("/ping", async (c) => {
+  try {
+    const { CRON_SECRET } = c.env;
+    const authHeader = c.req.header("authorization");
+
+    if (authHeader !== `Bearer ${CRON_SECRET}`) {
+      return c.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const redis = c.get("redis");
+    await redis.set("ping:timestamp", new Date().toISOString());
+
+    return c.json(
+      { status: "ok", services: { redis: "ok" } },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Redis ping failed:", error);
+
+    return c.json(
+      { status: "error", services: { redis: "error" } },
+      { status: 503 }
+    );
+  }
+});
 
 app.get("/search", async (c) => {
   try {
-    const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } =
-      env<EnvConfig>(c);
-
     const start = performance.now();
-    {
-      /*********************/
-    }
-
-    // to communicate with the database
-    const redis = new Redis({
-      url: UPSTASH_REDIS_REST_URL,
-      token: UPSTASH_REDIS_REST_TOKEN,
-    });
-
+    
+    const redis = c.get("redis");
     const query = c.req.query("q")?.toUpperCase();
 
     if (!query) {
@@ -61,9 +99,6 @@ app.get("/search", async (c) => {
       }
     }
 
-    {
-      /*********************/
-    }
     const end = performance.now();
 
     return c.json({
